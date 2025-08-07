@@ -64,15 +64,21 @@ const useCommentTree = (initialComments) => {
   }
 
     const deleteNode = (tree, commentId) => {
-    return tree.reduce((acc, comment) => {
-       if(comment.id === comment) {
-        return acc;
-       } else if (comment.replies && comment.replies.length > 0) {
-        comment.replies = deleteNode(comment.replies, commentId);
-       }
-       return [...acc, comment]
-    }, [])
-  };
+      return tree.reduce((acc, comment) => {
+        if (comment.id === commentId) {
+          return acc; // Skip this comment (don't include it in the result)
+        }
+        
+        // Create a new comment object with filtered replies
+        const newComment = { ...comment };
+        
+        if (newComment.replies && newComment.replies.length > 0) {
+          newComment.replies = deleteNode(newComment.replies, commentId);
+        }
+        
+        return [...acc, newComment];
+      }, []);
+    };
 
 
   const deleteComment = (commentId) => {
